@@ -20,6 +20,9 @@ class Comment extends Component {
             5000
         )
     }
+    componentWillUnmount() {
+        clearInterval(this._timer)
+    }
     _updateTimeString() {
         const comment = this.props.comment
         const duration = (+Date.now() - comment.createdTime) / 1000
@@ -28,6 +31,15 @@ class Comment extends Component {
                 ? `${Math.round(duration / 60)} 分钟前`
                 : `${Math.round(Math.max(duration, 1))} 秒前`
         })
+    }
+    _getProcessedContent() {
+        return content
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;")
+            .replace(/`([\S\s]+?)`/g, '<code>$1</code>')
     }
     handleDeleteComment() {
         if (this.props.onDeleteComment) {
@@ -41,7 +53,9 @@ class Comment extends Component {
                 <div className="comment-user">
                     <span>{this.props.comment.username}</span>：
                 </div>
-                <p>{this.props.comment.content}</p>
+                <p dangerouslySetInnerHTML={{
+                    __html: this._getProcessedContent(comment.content)
+                }} />
                 <span className="comment-createdtime">
                     {this.state.timeString}
                 </span>
