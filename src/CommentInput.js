@@ -2,9 +2,9 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 
 class CommentInput extends Component {
-    static PropTypes = {
-        onSubmit: PropTypes.func
-    }
+    // static PropTypes = {
+    //     onSubmit: PropTypes.func
+    // }
     constructor() {
         super()
         this.state = {
@@ -42,8 +42,11 @@ class CommentInput extends Component {
     }
     handleSubmit() {
         if (this.props.onSubmit) {
-            const { username, content } = this.state
-            this.props.onSubmit({username, content})
+            this.props.onSubmit({
+                username: this.state.username,
+                content: this.state.content,
+                createdTime: +new Date()
+            })
         }
         this.setState({ content: ''})
     }
